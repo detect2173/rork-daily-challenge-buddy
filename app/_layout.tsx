@@ -8,9 +8,6 @@ import { colors } from "@/constants/colors";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useStore } from "@/store/useStore";
 
-// Import Firebase config first to ensure initialization
-import "@/firebase/config";
-
 export const unstable_settings = {
   initialRouteName: "index",
 };
