@@ -1,34 +1,34 @@
-import React, { useEffect } from 'react';
-import { 
-  View, 
-  Text, 
-  StyleSheet, 
-  TextInput, 
-  TouchableOpacity, 
+import React, { useEffect } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
   ScrollView,
   KeyboardAvoidingView,
   Platform,
   ActivityIndicator,
-  Alert
-} from 'react-native';
-import { useStore } from '@/store/useStore';
-import { useAuthStore } from '@/store/useAuthStore';
-import { ChallengeCard } from '@/components/ChallengeCard';
-import { StreakIndicator } from '@/components/StreakIndicator';
-import { EmptyState } from '@/components/EmptyState';
-import { PremiumBanner } from '@/components/PremiumBanner';
-import { generateChallenge } from '@/utils/api';
-import { colors } from '@/constants/colors';
-import { Sparkles } from 'lucide-react-native';
-import { useRouter } from 'expo-router';
+  Alert,
+} from "react-native";
+import { MaterialIcons } from "@expo/vector-icons";
+import { useStore } from "@/store/useStore";
+import { useAuthStore } from "@/store/useAuthStore";
+import { ChallengeCard } from "@/components/ChallengeCard";
+import { StreakIndicator } from "@/components/StreakIndicator";
+import { EmptyState } from "@/components/EmptyState";
+import { PremiumBanner } from "@/components/PremiumBanner";
+import { generateChallenge } from "@/utils/api";
+import { colors } from "@/constants/colors";
+import { useRouter } from "expo-router";
 
 export default function HomeScreen() {
   const router = useRouter();
   const { isAuthenticated, user: authUser } = useAuthStore();
-  const { 
-    currentChallenge, 
-    isLoading, 
-    error, 
+  const {
+    currentChallenge,
+    isLoading,
+    error,
     user,
     currentPrompt,
     addChallenge,
@@ -38,33 +38,30 @@ export default function HomeScreen() {
     resetDailyChallenge,
     setCurrentPrompt,
     fetchChallenges,
-    fetchUserData
+    fetchUserData,
   } = useStore();
 
   useEffect(() => {
-    // Redirect to login if not authenticated
     if (!isAuthenticated) {
-      router.replace('/auth/login');
+      router.replace("/auth/login");
       return;
     }
-    
-    // Reset daily challenge count if it's a new day
     resetDailyChallenge();
   }, [isAuthenticated]);
 
   const handleGenerateChallenge = async () => {
     if (!currentPrompt.trim()) {
-      Alert.alert('Please enter what you want to improve');
+      Alert.alert("Please enter what you want to improve");
       return;
     }
 
     if (user.challengesRemaining <= 0 && !user.isPremium) {
       Alert.alert(
-        'Daily Limit Reached',
-        'You have reached your daily challenge limit. Upgrade to premium for unlimited challenges.',
+        "Daily Limit Reached",
+        "You have reached your daily challenge limit. Upgrade to premium for unlimited challenges.",
         [
-          { text: 'Maybe Later', style: 'cancel' },
-          { text: 'Upgrade', onPress: handlePremiumPress }
+          { text: "Maybe Later", style: "cancel" },
+          { text: "Upgrade", onPress: handlePremiumPress },
         ]
       );
       return;
@@ -76,9 +73,9 @@ export default function HomeScreen() {
     try {
       const challenge = await generateChallenge(currentPrompt);
       await addChallenge(challenge);
-      setCurrentPrompt('');
+      setCurrentPrompt("");
     } catch (err) {
-      setError('Failed to generate challenge. Please try again.');
+      setError("Failed to generate challenge. Please try again.");
       console.error(err);
     } finally {
       setLoading(false);
@@ -92,16 +89,16 @@ export default function HomeScreen() {
   };
 
   const handlePremiumPress = () => {
-    router.push('/premium');
+    router.push("/premium");
   };
 
   return (
     <KeyboardAvoidingView
       style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 0}
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 0}
     >
-      <ScrollView 
+      <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.scrollContent}
         keyboardShouldPersistTaps="handled"
@@ -112,7 +109,9 @@ export default function HomeScreen() {
         </View>
 
         <View style={styles.inputContainer}>
-          <Text style={styles.inputLabel}>What would you like to improve today?</Text>
+          <Text style={styles.inputLabel}>
+            What would you like to improve today?
+          </Text>
           <TextInput
             style={styles.input}
             value={currentPrompt}
@@ -125,7 +124,7 @@ export default function HomeScreen() {
           <TouchableOpacity
             style={[
               styles.generateButton,
-              (!currentPrompt.trim() || isLoading) && styles.disabledButton
+              (!currentPrompt.trim() || isLoading) && styles.disabledButton,
             ]}
             onPress={handleGenerateChallenge}
             disabled={!currentPrompt.trim() || isLoading}
@@ -135,35 +134,33 @@ export default function HomeScreen() {
               <ActivityIndicator color="#FFFFFF" size="small" />
             ) : (
               <>
-                <Sparkles size={18} color="#FFFFFF" />
+                <MaterialIcons name="auto-awesome" size={18} color="#FFFFFF" />
                 <Text style={styles.buttonText}>Generate Challenge</Text>
               </>
             )}
           </TouchableOpacity>
         </View>
 
-        {error && (
-          <Text style={styles.errorText}>{error}</Text>
-        )}
+        {error && <Text style={styles.errorText}>{error}</Text>}
 
         {currentChallenge ? (
-          <ChallengeCard 
-            challenge={currentChallenge} 
-            onComplete={handleCompleteChallenge} 
+          <ChallengeCard
+            challenge={currentChallenge}
+            onComplete={handleCompleteChallenge}
           />
         ) : (
           <EmptyState message="Generate your first challenge to start improving today!" />
         )}
 
-        {!user.isPremium && (
-          <PremiumBanner onPress={handlePremiumPress} />
-        )}
+        {!user.isPremium && <PremiumBanner onPress={handlePremiumPress} />}
 
         <View style={styles.remainingContainer}>
           <Text style={styles.remainingText}>
-            {user.isPremium 
-              ? 'Premium: Unlimited challenges' 
-              : `Free tier: ${user.challengesRemaining} challenge${user.challengesRemaining !== 1 ? 's' : ''} remaining today`}
+            {user.isPremium
+              ? "Premium: Unlimited challenges"
+              : `Free tier: ${user.challengesRemaining} challenge${
+                  user.challengesRemaining !== 1 ? "s" : ""
+                } remaining today`}
           </Text>
         </View>
       </ScrollView>
@@ -183,16 +180,16 @@ const styles = StyleSheet.create({
     paddingBottom: 24,
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     paddingHorizontal: 16,
     paddingTop: 16,
     paddingBottom: 8,
   },
   title: {
     fontSize: 24,
-    fontWeight: '700',
+    fontWeight: "700",
     color: colors.text,
   },
   inputContainer: {
@@ -200,7 +197,7 @@ const styles = StyleSheet.create({
   },
   inputLabel: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
     color: colors.text,
     marginBottom: 8,
   },
@@ -218,28 +215,28 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primary,
     borderRadius: 12,
     paddingVertical: 14,
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexDirection: 'row',
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "row",
   },
   disabledButton: {
     opacity: 0.6,
   },
   buttonText: {
-    color: '#FFFFFF',
-    fontWeight: '600',
+    color: "#FFFFFF",
+    fontWeight: "600",
     fontSize: 16,
     marginLeft: 8,
   },
   errorText: {
-    color: 'red',
-    textAlign: 'center',
+    color: "red",
+    textAlign: "center",
     marginVertical: 8,
     paddingHorizontal: 16,
   },
   remainingContainer: {
     padding: 16,
-    alignItems: 'center',
+    alignItems: "center",
   },
   remainingText: {
     fontSize: 14,

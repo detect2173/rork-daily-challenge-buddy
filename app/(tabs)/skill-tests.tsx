@@ -1,57 +1,49 @@
-import React, { useState, useEffect } from 'react';
-import { 
-  View, 
-  Text, 
-  StyleSheet, 
-  ScrollView, 
-  TouchableOpacity, 
+import React, { useState, useEffect } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
   TextInput,
   Alert,
-  ActivityIndicator
-} from 'react-native';
-import { useStore } from '@/store/useStore';
-import { useAuthStore } from '@/store/useAuthStore';
-import { SkillTestCard } from '@/components/SkillTestCard';
-import { EmptyState } from '@/components/EmptyState';
-import { PremiumBanner } from '@/components/PremiumBanner';
-import { colors } from '@/constants/colors';
-import { Award, Lock, Plus } from 'lucide-react-native';
-import { useRouter } from 'expo-router';
+  ActivityIndicator,
+} from "react-native";
+import { useStore } from "@/store/useStore";
+import { useAuthStore } from "@/store/useAuthStore";
+import { SkillTestCard } from "@/components/SkillTestCard";
+import { EmptyState } from "@/components/EmptyState";
+import { PremiumBanner } from "@/components/PremiumBanner";
+import { colors } from "@/constants/colors";
 
 export default function SkillTestsScreen() {
   const router = useRouter();
   const { isAuthenticated } = useAuthStore();
   const [showCreateForm, setShowCreateForm] = useState(false);
-  const [skillArea, setSkillArea] = useState('');
-  
-  const { 
-    skillTests, 
-    user, 
-    isLoading, 
-    error,
-    createSkillTest 
-  } = useStore();
+  const [skillArea, setSkillArea] = useState("");
+
+  const { skillTests, user, isLoading, error, createSkillTest } = useStore();
 
   useEffect(() => {
     // Redirect to login if not authenticated
     if (!isAuthenticated) {
-      router.replace('/auth/login');
+      router.replace("/auth/login");
       return;
     }
   }, [isAuthenticated]);
 
   const handlePremiumPress = () => {
-    router.push('/premium');
+    router.push("/premium");
   };
 
   const handleCreateTest = async () => {
     if (!skillArea.trim()) {
-      Alert.alert('Please enter a skill area');
+      Alert.alert("Please enter a skill area");
       return;
     }
 
     await createSkillTest(skillArea);
-    setSkillArea('');
+    setSkillArea("");
     setShowCreateForm(false);
   };
 
@@ -64,7 +56,8 @@ export default function SkillTestsScreen() {
           </View>
           <Text style={styles.lockedTitle}>Test Your Skills</Text>
           <Text style={styles.lockedDescription}>
-            Upgrade to premium to access skill tests that help you measure your progress and identify areas for improvement.
+            Upgrade to premium to access skill tests that help you measure your
+            progress and identify areas for improvement.
           </Text>
           <PremiumBanner onPress={handlePremiumPress} />
         </View>
@@ -76,7 +69,7 @@ export default function SkillTestsScreen() {
     <ScrollView style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>Skill Tests</Text>
-        <TouchableOpacity 
+        <TouchableOpacity
           style={styles.createButton}
           onPress={() => setShowCreateForm(!showCreateForm)}
         >
@@ -86,7 +79,9 @@ export default function SkillTestsScreen() {
 
       {showCreateForm && (
         <View style={styles.createForm}>
-          <Text style={styles.formLabel}>What skill would you like to test?</Text>
+          <Text style={styles.formLabel}>
+            What skill would you like to test?
+          </Text>
           <TextInput
             style={styles.input}
             value={skillArea}
@@ -97,7 +92,7 @@ export default function SkillTestsScreen() {
           <TouchableOpacity
             style={[
               styles.createTestButton,
-              (!skillArea.trim() || isLoading) && styles.disabledButton
+              (!skillArea.trim() || isLoading) && styles.disabledButton,
             ]}
             onPress={handleCreateTest}
             disabled={!skillArea.trim() || isLoading}
@@ -111,22 +106,18 @@ export default function SkillTestsScreen() {
         </View>
       )}
 
-      {error && (
-        <Text style={styles.errorText}>{error}</Text>
-      )}
+      {error && <Text style={styles.errorText}>{error}</Text>}
 
       <View style={styles.infoCard}>
         <Award size={20} color={colors.primary} />
         <Text style={styles.infoText}>
-          Skill tests help you measure your progress and identify areas for improvement. 
-          Take tests periodically to track your growth.
+          Skill tests help you measure your progress and identify areas for
+          improvement. Take tests periodically to track your growth.
         </Text>
       </View>
 
       {skillTests.length > 0 ? (
-        skillTests.map((test) => (
-          <SkillTestCard key={test.id} test={test} />
-        ))
+        skillTests.map((test) => <SkillTestCard key={test.id} test={test} />)
       ) : (
         <EmptyState message="You haven't created any skill tests yet. Create your first test to start tracking your progress!" />
       )}
@@ -140,14 +131,14 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     padding: 16,
   },
   title: {
     fontSize: 24,
-    fontWeight: '700',
+    fontWeight: "700",
     color: colors.text,
   },
   createButton: {
@@ -155,8 +146,8 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   createForm: {
     backgroundColor: colors.card,
@@ -166,7 +157,7 @@ const styles = StyleSheet.create({
   },
   formLabel: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
     color: colors.text,
     marginBottom: 8,
   },
@@ -184,27 +175,27 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primary,
     borderRadius: 12,
     paddingVertical: 14,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   disabledButton: {
     opacity: 0.6,
   },
   buttonText: {
-    color: '#FFFFFF',
-    fontWeight: '600',
+    color: "#FFFFFF",
+    fontWeight: "600",
     fontSize: 16,
   },
   errorText: {
-    color: 'red',
-    textAlign: 'center',
+    color: "red",
+    textAlign: "center",
     marginVertical: 8,
     paddingHorizontal: 16,
   },
   infoCard: {
     backgroundColor: `${colors.primary}10`,
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     padding: 16,
     marginHorizontal: 16,
     marginBottom: 16,
@@ -219,8 +210,8 @@ const styles = StyleSheet.create({
   },
   lockedContainer: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     padding: 24,
   },
   lockIconContainer: {
@@ -228,20 +219,20 @@ const styles = StyleSheet.create({
     height: 72,
     borderRadius: 36,
     backgroundColor: `${colors.primary}20`,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     marginBottom: 16,
   },
   lockedTitle: {
     fontSize: 20,
-    fontWeight: '700',
+    fontWeight: "700",
     color: colors.text,
     marginBottom: 8,
   },
   lockedDescription: {
     fontSize: 16,
     color: colors.textSecondary,
-    textAlign: 'center',
+    textAlign: "center",
     marginBottom: 24,
     lineHeight: 24,
   },

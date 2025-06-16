@@ -1,35 +1,40 @@
-import React, { useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
-import { useStore } from '@/store/useStore';
-import { useAuthStore } from '@/store/useAuthStore';
-import { ChallengeCard } from '@/components/ChallengeCard';
-import { EmptyState } from '@/components/EmptyState';
-import { PremiumBanner } from '@/components/PremiumBanner';
-import { RecommendationCard } from '@/components/RecommendationCard';
-import { SkillTestCard } from '@/components/SkillTestCard';
-import { colors } from '@/constants/colors';
-import { Lock, TrendingUp, Sparkles, Award } from 'lucide-react-native';
-import { useRouter } from 'expo-router';
+import React, { useEffect } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+} from "react-native";
+import { useStore } from "@/store/useStore";
+import { useAuthStore } from "@/store/useAuthStore";
+import { ChallengeCard } from "@/components/ChallengeCard";
+import { EmptyState } from "@/components/EmptyState";
+import { PremiumBanner } from "@/components/PremiumBanner";
+import { RecommendationCard } from "@/components/RecommendationCard";
+import { SkillTestCard } from "@/components/SkillTestCard";
+import { colors } from "@/constants/colors";
+import { useRouter } from "expo-router";
 
 export default function HistoryScreen() {
   const router = useRouter();
   const { isAuthenticated } = useAuthStore();
-  const { 
-    challenges, 
-    user, 
-    markChallengeComplete, 
+  const {
+    challenges,
+    user,
+    markChallengeComplete,
     recommendations,
     generateRecommendations,
-    skillTests
+    skillTests,
   } = useStore();
 
   useEffect(() => {
     // Redirect to login if not authenticated
     if (!isAuthenticated) {
-      router.replace('/auth/login');
+      router.replace("/auth/login");
       return;
     }
-    
+
     if (user.isPremium && challenges.length > 0) {
       generateRecommendations();
     }
@@ -40,7 +45,7 @@ export default function HistoryScreen() {
   };
 
   const handlePremiumPress = () => {
-    router.push('/premium');
+    router.push("/premium");
   };
 
   if (!user.isPremium) {
@@ -52,7 +57,8 @@ export default function HistoryScreen() {
           </View>
           <Text style={styles.lockedTitle}>Your Personal Growth Assistant</Text>
           <Text style={styles.lockedDescription}>
-            Upgrade to premium to access your challenge history, get personalized recommendations, and track your progress over time.
+            Upgrade to premium to access your challenge history, get
+            personalized recommendations, and track your progress over time.
           </Text>
           <PremiumBanner onPress={handlePremiumPress} />
         </View>
@@ -72,15 +78,17 @@ export default function HistoryScreen() {
             <Sparkles size={18} color={colors.primary} />
             <Text style={styles.sectionTitle}>Recommended For You</Text>
           </View>
-          <Text style={styles.sectionSubtitle}>Based on your previous challenges</Text>
-          
-          <ScrollView 
-            horizontal 
+          <Text style={styles.sectionSubtitle}>
+            Based on your previous challenges
+          </Text>
+
+          <ScrollView
+            horizontal
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={styles.recommendationsContainer}
           >
             {recommendations.map((recommendation) => (
-              <RecommendationCard 
+              <RecommendationCard
                 key={recommendation.id}
                 recommendation={recommendation}
               />
@@ -95,9 +103,9 @@ export default function HistoryScreen() {
             <Award size={18} color={colors.primary} />
             <Text style={styles.sectionTitle}>Recent Skill Tests</Text>
           </View>
-          
-          <ScrollView 
-            horizontal 
+
+          <ScrollView
+            horizontal
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={styles.recommendationsContainer}
           >
@@ -106,10 +114,10 @@ export default function HistoryScreen() {
                 <SkillTestCard test={test} />
               </View>
             ))}
-            
-            <TouchableOpacity 
+
+            <TouchableOpacity
               style={styles.viewAllCard}
-              onPress={() => router.push('/skill-tests')}
+              onPress={() => router.push("/skill-tests")}
             >
               <Text style={styles.viewAllText}>View All Tests</Text>
             </TouchableOpacity>
@@ -122,7 +130,7 @@ export default function HistoryScreen() {
           <TrendingUp size={18} color={colors.primary} />
           <Text style={styles.sectionTitle}>Your Progress</Text>
         </View>
-        
+
         <View style={styles.statsContainer}>
           <View style={styles.statCard}>
             <Text style={styles.statValue}>{challenges.length}</Text>
@@ -130,7 +138,7 @@ export default function HistoryScreen() {
           </View>
           <View style={styles.statCard}>
             <Text style={styles.statValue}>
-              {challenges.filter(c => c.completed).length}
+              {challenges.filter((c) => c.completed).length}
             </Text>
             <Text style={styles.statLabel}>Completed</Text>
           </View>
@@ -145,7 +153,7 @@ export default function HistoryScreen() {
         <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>Challenge History</Text>
         </View>
-        
+
         {challenges.length > 0 ? (
           challenges.map((challenge) => (
             <ChallengeCard
@@ -173,21 +181,21 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    fontWeight: '700',
+    fontWeight: "700",
     color: colors.text,
   },
   section: {
     marginBottom: 24,
   },
   sectionHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     paddingHorizontal: 16,
     marginBottom: 8,
   },
   sectionTitle: {
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: "600",
     color: colors.text,
     marginLeft: 8,
   },
@@ -211,20 +219,20 @@ const styles = StyleSheet.create({
     backgroundColor: colors.card,
     borderRadius: 16,
     marginRight: 16,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     borderWidth: 1,
     borderColor: colors.border,
-    borderStyle: 'dashed',
+    borderStyle: "dashed",
   },
   viewAllText: {
     fontSize: 14,
-    fontWeight: '500',
+    fontWeight: "500",
     color: colors.primary,
   },
   statsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     paddingHorizontal: 16,
     marginTop: 8,
   },
@@ -234,11 +242,11 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 16,
     marginHorizontal: 4,
-    alignItems: 'center',
+    alignItems: "center",
   },
   statValue: {
     fontSize: 24,
-    fontWeight: '700',
+    fontWeight: "700",
     color: colors.primary,
     marginBottom: 4,
   },
@@ -248,8 +256,8 @@ const styles = StyleSheet.create({
   },
   lockedContainer: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     padding: 24,
   },
   lockIconContainer: {
@@ -257,20 +265,20 @@ const styles = StyleSheet.create({
     height: 72,
     borderRadius: 36,
     backgroundColor: `${colors.primary}20`,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     marginBottom: 16,
   },
   lockedTitle: {
     fontSize: 20,
-    fontWeight: '700',
+    fontWeight: "700",
     color: colors.text,
     marginBottom: 8,
   },
   lockedDescription: {
     fontSize: 16,
     color: colors.textSecondary,
-    textAlign: 'center',
+    textAlign: "center",
     marginBottom: 24,
     lineHeight: 24,
   },
